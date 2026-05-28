@@ -1,11 +1,13 @@
 -- CreateTable
 CREATE TABLE "TeaDrinker" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "hexColor" TEXT NOT NULL,
     "note" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TeaDrinker_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
