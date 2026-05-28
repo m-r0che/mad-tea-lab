@@ -3,9 +3,18 @@ import { prisma } from "@/lib/db";
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
+const PUBLIC_FIELDS = {
+  id: true,
+  name: true,
+  hexColor: true,
+  note: true,
+  createdAt: true,
+} as const;
+
 export async function GET() {
   const drinkers = await prisma.teaDrinker.findMany({
     orderBy: { createdAt: "desc" },
+    select: PUBLIC_FIELDS,
   });
   return NextResponse.json({ drinkers });
 }
@@ -35,6 +44,7 @@ export async function POST(req: Request) {
       where: { email },
       create: { name, email, hexColor, note: note || null },
       update: { name, hexColor, note: note || null },
+      select: PUBLIC_FIELDS,
     });
     return NextResponse.json({ drinker });
   } catch (err) {

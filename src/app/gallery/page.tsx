@@ -34,9 +34,8 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
   return { h: h * 360, s: s * 100, l: l * 100 };
 }
 
-function seededRotation(seed: string): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+function seededRotation(seed: number): number {
+  const h = Math.imul(seed, 2654435761) >>> 0;
   return ((h % 600) / 100) - 3; // -3 .. +3
 }
 
@@ -51,6 +50,13 @@ export default async function GalleryPage({
 
   const drinkers = await prisma.teaDrinker.findMany({
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      hexColor: true,
+      note: true,
+      createdAt: true,
+    },
   });
 
   const sorted = [...drinkers];
@@ -135,7 +141,7 @@ export default async function GalleryPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {sorted.map((d, i) => {
               const Corner = corners[i % corners.length];
-              const rot = seededRotation(d.email);
+              const rot = seededRotation(d.id);
               const teaName = findSwatchName(d.hexColor);
               return (
                 <article
